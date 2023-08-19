@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>셰번째예제</title>
+    <style>
+        #div1{
+            background: green;
+        }
+        #div2, #div3{
+            background: yellow;
+        }
+        .diva{
+            padding: 10px;
+            margin: 10px;
+        }
+        #div3 span{
+            font-size: 3rem;
+        }
+        /*  ,는 or 한칸띄면 and */
+    </style>
+</head>
+<body>
+    <!-- 이미지 출력 태그-->
+    <img src = "summer.jpg" width="100">
+    <img src = "http://via.placeholder.com/100x100">
+
+    <!-- 영역 설정 -->
+    <div id="div1" class="diva">
+        <img src = "summer.jpg" width="100">
+        <img src = "summer.jpg" width="100">
+    </div>
+    <div id="div2" class="diva">
+        <img src = "summer.jpg" width="100">
+        <img src = "summer.jpg" width="100">
+    </div>
+
+    <div id="div3" class="diva">
+        <span> 안녕하세요!</span>
+        <span> 반갑습니다!</span>
+    </div>
+    <!-- 인라인은 그 줄(예)a, img) -->
+    <!-- 블럭방식은 다음줄 예)h1 -->
+    <!-- id는 중복이 안됨, 스타일에서 # 표기  -->
+    <!-- 클래스는 공통, 스타일에서 .으로 표기 -->
+</body>
+</html>

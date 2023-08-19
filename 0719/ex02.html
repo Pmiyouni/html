@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>handlebars 연습</title>
+    <style>
+        #div_product  .name{
+            color: green; 
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="row my-5  justify-content-center ">
+        <div class="col-md-8 px-5">
+            <h1 class="text-center">상품 목록</h1>
+            <br>
+            <div id="div_product"></div>
+        </div>
+    </div>
+    <div class="row my-5 justify-content-center">
+    <div class="col-md-8 px-5">
+        <h1 class="text-center mb-5">매출 목록</h1>
+        <br>
+        <div id="div_sale"></div>
+
+    </div>
+    </div>
+    <!-- 상품목록 템플릿 -->
+    <script id="temp_product" type="text/x-handlebars-template">
+        <table class="table table-striped ">
+            <!-- 부트스트랩에서 테이블 모양 가져옴 -->
+            {{#each .}}
+            <tr>
+                    <td> {{code}}</td>
+                    <td class="name"> {{name}}</td>
+                    <td> {{price}}</td>
+                    <td> <button class="view btn-success btn-sm w-100" index="{{@index}}">조회</button></td>
+
+            </tr>
+            <!-- Modal(상품 조회) -->
+    <div class="modal fade" id="modal_product{{@index}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3>{{code}} :{{name}} : {{price}} </h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Understood</button>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- Modal(상품 조회) -->
+            {{/each}}
+            </table>
+
+    </script>
+    <!-- 판매목록 템플릿 -->
+    <script id="temp_sale" type="text/x-handlebars-template">
+        <table class="table table-striped ">
+            <!-- 부트스트랩에서 테이블 모양 가져옴 -->
+            {{#each .}}
+            <tr>
+                    <td> {{scode}}</td>
+                    <td> {{code}}</td>
+                    <td> {{qnt}}</td>
+                    <td> {{sprice}}</td>
+                    <td> {{date}}</td>
+                    <td> <button class="view btn btn-warning btn-sm w-100" index="{{@index}}">조회</button></td>
+
+            </tr>
+           <!-- Modal(판매 조회) -->
+    <div class="modal fade" id="modal_sale{{@index}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3>코드  {{scode}} : 수량 {{qnt}} 개 : 가격 {{sprice}} 원</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary">ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Modal(판매 조회) -->
+            {{/each}}
+            </table>
+
+    </script>
+   
+</body>
+<script>
+
+    const product = [
+
+        { code: '100', name: '냉장고', price: 2000000 },
+        { code: '101', name: '세탁기', price: 1500000 },
+        { code: '102', name: '건조기', price: 1200000 },
+
+
+    ];
+    // 1)템플릿 컴파일
+    const temp_product = Handlebars.compile($("#temp_product").html());
+    // 2) 데이터->템플릿
+    const html = temp_product(product);
+    // 3) html ->div 출력
+    $("#div_product").html(html);
+
+
+    const sales = [
+
+        { scode: '1', code: '102', qnt: 2, sprice: 2000000, date: '2023-07-02' },
+        { scode: '2', code: '100', qnt: 3, sprice: 1500000, date: '2023-07-05' },
+        { scode: '3', code: '101', qnt: 5, sprice: 1000000, date: '2023-07-08' },
+
+    ];
+    // 1)템플릿 컴파일
+    const temp_sale = Handlebars.compile($("#temp_sale").html());
+    // 2) 데이터->템플릿
+    const html1 = temp_sale(sales);
+    // 3) html1 ->div 출력
+    $("#div_sale").html(html1);
+
+    //조회
+    $("#div_product").on("click","tr td .view",function(){
+        const index=$(this).attr("index");
+         $("#modal_product"+index).modal('show');
+    });
+    $("#div_sale").on("click","tr td .view",function(){
+        const index=$(this).attr("index");
+         $("#modal_sale"+index).modal('show');
+    });
+</script>
+
+</html>

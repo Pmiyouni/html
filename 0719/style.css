@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&display=swap');
+* {
+    font-family: 'Bagel Fat One', cursive;
+}
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;	
+  }

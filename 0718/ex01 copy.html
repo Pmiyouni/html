@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품관리</title>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <!-- jquery 라이브러리를 사용하기 위해 -->
+   <link rel ="stylesheet" href="style.css"/>
+    <!-- css 스타일시트로 외부 파일을 연결함 -->
+</head>
+<body>
+    <h1 class="title">상품관리</h1>
+
+    <!-- 입력폼 -->
+    <form name="frm">
+        <input name="code" placeholder="상품코드" size="10" >
+        <!-- value는 초기 미리보기 글자를 설정 -->
+        <hr>
+        <input name="name" placeholder="상품이름" size="50">
+        <!-- 무엇을 입력해야 하는지 안내하는 문구를 넣고 싶다면 placeholder 사용 -->
+        <hr>
+        <input name="price" type="number" size="10" step="1000"> 원
+        <!--input 태그에서 value는 반드시 작성해야 값이 저장됨 -->
+        <hr>
+        <input type="submit" value="상품등록">
+        <input type="reset" value="등록취소">
+    </form>
+    <h1 class="title">상품목록</h1>
+     <!--상품목록이 출력될 공간-->
+    <table id="tbl">
+        <!-- 테이블 아이디 지정 -->        
+    </table>
+   </body>
+
+<script>
+    let code=103; // 102번까지는 샘플 데이터 입력상태임
+    $(frm.code).val(code);  //폼안의 코드에 코드값을 설정
+    // .val()은 양식(form)의 값을 가져오거나 값을 설정
+    // .val( value )는 선택한 양식의 값을 설정합니다.(set)
+    // .val()은 값을 가져옴(get)
+    
+
+    // 각행의 삭제버튼을 클릭한 경우  
+    $("#tbl").on("click",".row button", function(){ //tr에 row라고 클래스 줌
+          //.row button 대신 tr td button
+        let row=$(this).parent().parent();
+        // this는 내자신 즉 button이고 부모은 td 또 부모는 tr를  의미
+
+        let code=row.find(".code").text(); 
+            //row에서 코드의 값(코드 클래스 줌)을  찾아서 글자를 대입
+
+        let index=row.attr("index"); //row(해당 행)의 index 속성을 index 변수에 대입
+        // attr은 요소(element)의 속성(attribute)의 값을 가져오거나 속성을 추가하는 것
+        if(confirm(code+'번 삭제하실래요?')){  // 선택을 확인(예)인 true 일경우
+            //confirm(선택창)은 확인(예) 또는 취소(아니오) 선택
+           products.splice(index,1); //배열의 삭제(index부터 1개를 배열데이터에서 삭제)
+           getList(); //목록 출력함수 호출
+        }
+    });
+    //상품 json 데이타
+    let products=[ 
+        {code: 100,name:'오브제냉장고', price:2500000},
+        {code: 101,name:'오브제세탁기', price:1500000},
+        {code: 102,name:'오브제스타일러', price:1200000},
+    ]
+    //JSON Array(대괄호 '[ ]'로 둘러싸인 부분)
+    //[{데이터이름:값,name:value...}],[{name:value,name:value...}]
+    //숫자는  따옴표로 안 묶음, 문자는 따옴표로 묶음   데이터는 쉼표로 나열
+
+    getList();
+    //목록 출력 함수를 호출
+
+    //목록 출력하는 함수
+    function getList(){ // 함수 앞에는 function 붙임
+        let html=""; //html 변수 지정
+        products.forEach((p, index)=>{ //forEach 메서드는 배열을 반복
+            //forEach의 선택적매개변수이용
+            //첫번째 매개변수는 각요소의 순서를 나타내는 인덱스
+            //두번째 매개변수를 통해 요소의 인덱스를 확인할 수 있음
+            //console.log(p);
+            html += `<tr class='row' index=${index}>`; 
+                //`는 변수와 값등을  +로 연결해야하나 편하게 표기하고 싶어서
+                
+            html += `<td class='code'>${p.code}</td><td>${p.name}</td><td>${p.price}</td>`;
+            html += "<td><button>삭제</button></td>"
+            html += "</tr>";
+        });
+        $("#tbl").html(html); //선택자인 아이디가 tbl에 html의 내용을 설정
+    }
+      //폼이 서밋될때 유효성 체크
+      $(frm).on("submit", function(e){
+        e.preventDefault();
+        //<submit> 태그는 그 태그의 값을 전송하면서 해당 페이지를 새로고침 하는 기능을 가지고 있다.
+        // 이러한 기능들은 매우 유용하지만, 그 의도로 사용하지 않게 될 경우 불편함을 야기할 수 있다. 이때 사용
+        //form 안에 submit 역할을 하는 버튼을 눌렀어도 새로 실행하지 않게 하고싶을 경우 (submit은 작동됨)
+        let code=$(frm.code).val();
+        let name=$(frm.name).val();
+        let price=$(frm.price).val();
+        // val()은 함수호출이고 val(code)는 받아옴
+
+        if(code==""){
+            alert("상품코드를 입력하세요!"); //경고창 띄움
+            $(frm.code).focus(); 
+             // focus()는 해당요소에 포커스를 부여하여 바로 입력 가능 또는 버튼은 엔터키 눌렀을때 클릭효과
+        } else if(name==""){
+            alert("상품이름을 입력하세요!");
+            $(frm.name).focus();
+        }else if(price==""){
+            alert("상품가격을 입력하세요!");
+            $(frm.price).focus();
+        } else{
+            if(confirm("새로운 상품을 등록하실래요?")){
+                const product ={code:code, name:name, price:price}
+                products.push(product);
+                getList();
+                alert(`상품코드:${code}\n상품이름:${name}\n상품가격:${price} 등록완료!`);
+                code++;
+                $(frm.code).val(code);//코드값을 증가하여 변수에 대입
+            } else{
+                alert("등록 취소되었습니다");
+            }
+        }
+      });
+
+</script>
+</html>

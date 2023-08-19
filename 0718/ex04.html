@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>할일목록</title>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+    <style>
+        #todos{
+            width: 500px;
+            margin: 0px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="todos" ></div>    
+    <script id="temp" type="text/x-handlebars-template">
+        {{#each .}}
+        <h5> {{id}}:{{title}}</h5>
+        
+        <!-- <p>{{completed}}</p> -->
+        {{/each}}
+    </script>
+</body>
+<script>
+    //게시글 목록 데이터 출력
+    getTodos();
+    function getTodos(){
+        $.ajax({  //데이터가져옴
+            type:"get",
+            url:"https://jsonplaceholder.typicode.com/todos",
+            dataType: "json",
+            success:function(data){
+                  
+                const rows=data.filter(todos=>todos.id<=5);
+                //1. 템플릿 컴파일
+                let temp1=Handlebars.compile($("#temp").html());
+                //2.템플릿에 데이터 넣기
+                let html1=temp1(rows);
+                //3. 출력영역 html 넣기
+                $("#todos").html(html1);
+            }
+        });
+    }
+</script>
+</html>

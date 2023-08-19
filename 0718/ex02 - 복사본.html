@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생관리</title>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <!--제이쿼리는 HTML 이벤트 처리 등 다양한 기능을 부여하는 오픈소스 기반의 자바스크립트 라이브러리  -->
+    <!--cdn은 content delivery nerwork의 약자로 
+        웹사이트의 접속자가 콘텐츠를 다운로드할 때 자동으로 가장 가까운 서버에서 다운로드할 수 있도록 하는 기술-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+    <!-- 임포트 -->
+    <!-- 템플릿으로 HTML을 변경하는 작업을 할 때 도와주는 handlebars 라이브러리 -->
+    <!-- 자바스크립트 템플릿 라이브러리 -->
+    <!-- Handlebar.js는 프로그램 로직과 프레젠테이션 계층을 분리하기위한 수단 -->
+    <!-- head 태그 내부에 위치 -->
+
+    <link rel ="stylesheet" href="style.css"/>
+
+</head>
+<body>
+    <h1 class="title">학생관리</h1>
+    <form name="frm"> 
+        <!-- 폼의 네임은 frm -->
+        <input name="scode"  placeholder="학번"  size="10"  readonly  maxlength="6">
+        <hr>
+        <input name="sname"  placeholder="이름"  size="10" >
+        <hr>
+        <select name="dept">
+            <option value="10"> 컴정과</option>
+            <option value="11"> 전자과</option>
+            <option value="12" selected> 통신과</option>
+            <!-- selecte는 선택 초기 설정값 -->
+        </select>
+        <hr>
+        <input name="year" value="1" type="radio" checked>1학년
+        <!-- checked는 기본 설정값 -->
+        <input name="year" value="2" type="radio">2학년
+        <input name="year" value="3" type="radio">3학년
+        <hr>
+        <input type="submit"  value="학생등록">
+        <input type="reset"  value="등록취소">
+    </form>
+    <hr>
+    <h1 class="title">학생목록</h1>
+      <!--목록을 출력할 영역-->
+    <div id="list"></div>
+
+    <script id="temp" type="text/x-handlebars-template">
+        <!-- handlebars 템플릿 작성
+        : script내부에 type을 text/x-handlebars-X 식으로 작성한다. 
+        X부분에는 자신이 원하는 명칭을 넣을 수 있다. -->
+        <!-- 1. handlebars는 태그를 이용한 템플릿을 구성하고
+            2. 그 템플릿에 들어갈 데이터를 구성하고
+            3. 마지막으로 데이터를 템플릿에 적용한다.
+            이때, 템플릿에 데이터가 들어갈 자리에는 {{ }} 이 안에 변수명을 표시해주게 된다  -->
+
+        <table>
+        {{#each .}} 
+        <!-- 반복 -->
+        <tr index="{{@index}}" sname="{{sname}}">
+            <td>{{scode}}</td>
+            <td class="sname">{{sname}}</td>
+            <td>{{dept}}</td>
+            <td>{{year}}학년</td>
+            <td><button>삭제</button></td>
+
+        </tr>
+        {{/each}}       
+    </table>
+    </script>
+</body>
+
+<script>
+    let scode=202304;
+    $(frm.scode).val(scode); //scode 값을 폼의 scode에 저장
+
+    //학생데이터 저장(json)
+    //핸들바 템플릿에 바인딩할 데이터
+    let students=[
+        {scode:202301, sname:'홍길동', dept:'10', year:2},
+        {scode:202302, sname:'강감찬', dept:'11', year:2},
+        {scode:202303, sname:'이순신', dept:'10', year:1},
+    ]
+      //삭제버튼을 클릭한 경우
+    $("#list").on("click","tr td button", function(){
+        let tr=$(this).parent().parent();
+        let index=tr.attr("index");
+
+        let sname1=tr.attr("sname");
+        let sname= tr.find(".sname").text();
+        if(confirm(`${sname1} 학생을 삭제하실래요`)){
+            students.splice(index,1);
+            getList();
+        }
+      });
+       //학생목록 출력함수
+    getList();
+       // [  handlebars 적용하기 ]
+    function getList(){
+        let temp=Handlebars.compile($("#temp").html()); 
+        // let source = $("#temp").html(); //핸들바 템플릿 가져온다.
+        // let temp = Handlebars.compile(source);  //핸들바 템플릿 컴파일
+        $("#list").html(temp(students));
+        // let html1= temp(students); 
+                 //핸들바 템플릿에 데이터를 바인딩해서 HTML 생성(//2.템플릿에 데이터 넣기)
+        //$("#list").html(html1); //3. 출력영역 html 넣기
+    }
+    //폼이 서밋될때 유효성 체크
+    $(frm).on("submit",function(e){
+        e.preventDefault();
+        let scode=$(frm.scode).val();
+        let sname=$(frm.sname).val();
+        let dept=$(frm.dept).val();
+        let year=$("input[name=year]:checked").val();      
+        // INPUT 객체의 name 속성이 맞는 객체를 가져오게되고,
+        // 그 중에서 현재 체크된 라디오 버튼의 value 를 돌려줌 
+
+        if(sname==""){
+            alert("이름을 입력하세요!");
+            $(frm.sname).focus();
+        }else if(sname.replace(/[가-힣]/g, '')){//한글 입력 여부 체크
+            alert("이름을 한글로 입력하세요")
+            $(frm.sname).val("");
+            $(frm.sname).focus();
+        
+        } else{
+            if(confirm("새로운 학생을 등록하실래요?")){
+                //console.log(scode,sname,dept,year);
+                let data={scode:scode, sname:sname, dept:dept, year:year}
+                students.push(data);  //배열의 끝에 하나이상의 요소 추가
+                
+                getList();
+                scode++;
+                $(frm.scode).val(scode);
+                $(frm.sname).val("");
+                $(frm.sname).focus();
+                
+            }else{
+                alert("등록이 취소되었습니다")
+            };
+        }
+    });
+</script>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>handlebars 연습</title>
+    <style>
+        #div_camp  .name{
+            color:blue;  
+        }
+    </style>
+</head>
+
+<body>
+
+   <div class="row my-5 justify-content-center">
+        <div class="col-md-8 px-5">
+            <h1 class="text-center">캠핑장 관리</h1>
+            <br>
+            <div id="div_camp"></div>
+        </div>
+   </div>
+
+ <!-- 캠핑장 관리 템플릿 -->
+ <script id="temp_camp" type="text/x-handlebars-template">
+    <table class="table table-hover">
+      <!-- 부트스트랩에서 테이블 모양 가져옴 -->
+    {{#each.}}
+    <tr>
+        <td>{{code}}</td>
+        <td class="name">{{name}}</td>
+        <td>{{addr}}</td>
+        <td>{{tel}}</td>
+        <td> <button class="view btn-success btn-sm w-100" index="{{@index}}">조회</button></td>
+    </tr>
+   
+<!-- Modal(캠핑장 조회) -->
+<div class="modal fade" id="modal_camp{{@index}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">조회</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <h3>번호는 {{code}} : 캠핑장은 {{name}}  </h3>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            <button type="button" class="btn btn-primary">ok</button>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Modal -->
+        {{/each}}
+    </table>
+      
+
+</script>
+</body>
+<script>
+    const camp=[
+        {code:'100',name:'도도리캠핑장',addr:'강원도',tel:'010-8888-5555'},
+        {code:'101',name:'솔밭캠핑장',addr:'경기도',tel:'010-5555-6666'},
+        {code:'102',name:'하늘캠핑장',addr:'인천',tel:'010-8888-5555'}
+    ];
+    // 템플릿 컴파일
+    const temp_camp=Handlebars.compile($("#temp_camp").html());
+
+    // const source=$(#temp_camp).html;
+    // const temp_camp=Handlebars.compile(source);
+    // 데이터->템플릿
+    const html_camp = temp_camp(camp);
+    // html -> div 출력
+    $("#div_camp").html(html_camp);
+
+    //조회
+    $("#div_camp").on("click", "tr td .view", function(){
+        const index = $(this).attr("index");
+        $("#modal_camp"+index).modal('show');
+    });
+</script>   
+</html>
